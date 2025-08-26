@@ -31,6 +31,12 @@ The installer will:
 - ✅ Create the proper settings.json file
 - ✅ Guide you through setup
 
+**Important:** For reliable hook triggering on Windows, run Claude Code as Administrator:
+```bash
+# Right-click Command Prompt → "Run as administrator"
+claude
+```
+
 ### macOS/Linux
 ```bash
 git clone https://github.com/nicolasestrem/ClaudeBell.git
