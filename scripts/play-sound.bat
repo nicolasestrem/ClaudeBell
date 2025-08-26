@@ -10,10 +10,9 @@ if "%SOUND_TYPE%"=="" set "SOUND_TYPE=default"
 set "SCRIPT_DIR=%~dp0"
 set "SOUNDS_DIR=%SCRIPT_DIR%..\sounds"
 
-REM Use bip.wav as the primary sound file with absolute path
-set "SOUND_FILE=C:\Users\nicol\ClaudeBell\sounds\bip.wav"
+REM Try bip.wav first, then notify.wav, then system sound
+set "SOUND_FILE=%SOUNDS_DIR%\bip.wav"
 
-REM Check if sound file exists, if not try notify.wav, then system sound
 if exist "%SOUND_FILE%" (
     powershell -Command "(New-Object System.Media.SoundPlayer '%SOUND_FILE%').PlaySync()"
 ) else (

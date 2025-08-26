@@ -17,63 +17,77 @@ echo.
 
 REM Test sound playback
 echo Testing sound playback...
-call "%CLAUDE_BELL_DIR%\scripts\play-sound.bat" default
+call "%CLAUDE_BELL_DIR%\scripts\play-sound.bat" alert
+timeout /t 2 /nobreak >nul
 echo.
 
-REM Create user environment variables
-echo Setting environment variables...
-setx CLAUDE_BELL_DIR "%CLAUDE_BELL_DIR%" >nul 2>&1
-setx CLAUDE_BELL_EXT "bat" >nul 2>&1
+REM Check if Claude settings directory exists
+set "CLAUDE_SETTINGS_DIR=%APPDATA%\Claude"
+if not exist "%CLAUDE_SETTINGS_DIR%" (
+    echo Creating Claude settings directory...
+    mkdir "%CLAUDE_SETTINGS_DIR%"
+)
 
-if %ERRORLEVEL% == 0 (
-    echo [OK] Environment variables set successfully
+REM Create the working settings.json configuration
+set "SETTINGS_FILE=%CLAUDE_SETTINGS_DIR%\settings.json"
+echo Creating Claude Code hooks configuration...
+
+echo { > "%SETTINGS_FILE%"
+echo   "hooks": { >> "%SETTINGS_FILE%"
+echo     "user-prompt-submit": "%CLAUDE_BELL_DIR%\\scripts\\play-sound.bat gentle", >> "%SETTINGS_FILE%"
+echo     "assistant-response-complete": "%CLAUDE_BELL_DIR%\\scripts\\play-sound.bat success", >> "%SETTINGS_FILE%"
+echo     "tool-call-start": "%CLAUDE_BELL_DIR%\\scripts\\play-sound.bat alert", >> "%SETTINGS_FILE%"
+echo     "tool-call-complete": "%CLAUDE_BELL_DIR%\\scripts\\play-sound.bat gentle" >> "%SETTINGS_FILE%"
+echo   } >> "%SETTINGS_FILE%"
+echo } >> "%SETTINGS_FILE%"
+
+if exist "%SETTINGS_FILE%" (
+    echo [OK] Claude Code hooks configured successfully
+    echo Configuration saved to: %SETTINGS_FILE%
 ) else (
-    echo [WARNING] Could not set environment variables automatically
-    echo.
-    echo Please add these manually to your environment:
-    echo CLAUDE_BELL_DIR=%CLAUDE_BELL_DIR%
-    echo CLAUDE_BELL_EXT=bat
+    echo [ERROR] Failed to create configuration file
+    goto :manual_config
 )
 echo.
 
-REM Instructions for Claude Code configuration
-echo ===============================================
-echo        Next Steps - Configure Claude Code     
-echo ===============================================
-echo.
-echo 1. Run: claude config edit
-echo.
-echo 2. Add the following hooks configuration:
-echo.
-echo {
-echo   "hooks": {
-echo     "Notification": [{
-echo       "hooks": [{
-echo         "type": "command",
-echo         "command": "%CLAUDE_BELL_DIR%\\scripts\\play-sound.bat alert"
-echo       }]
-echo     }],
-echo     "Stop": [{
-echo       "hooks": [{
-echo         "type": "command",  
-echo         "command": "%CLAUDE_BELL_DIR%\\scripts\\play-sound.bat success"
-echo       }]
-echo     }],
-echo     "Error": [{
-echo       "hooks": [{
-echo         "type": "command",
-echo         "command": "%CLAUDE_BELL_DIR%\\scripts\\play-sound.bat error"
-echo       }]
-echo     }]
-echo   }
-echo }
-echo.
-echo 3. Save and close the configuration file
-echo.
-echo 4. Test by asking Claude Code something that requires permission
-echo.
 echo ===============================================
 echo        Installation Complete!
 echo ===============================================
 echo.
+echo ClaudeBell is now installed and configured!
+echo.
+echo Your custom sounds:
+echo - Place WAV files in: %CLAUDE_BELL_DIR%\sounds\
+echo - Primary sound file: bip.wav
+echo - Fallback: Windows system sounds
+echo.
+echo Sound notifications will trigger on:
+echo - Permission prompts and errors (most reliable)
+echo - User input and tool execution (may vary)
+echo.
+echo Restart Claude Code to activate the hooks.
+echo.
+goto :end
+
+:manual_config
+echo.
+echo ===============================================
+echo        Manual Configuration Required
+echo ===============================================
+echo.
+echo Please manually create: %APPDATA%\Claude\settings.json
+echo.
+echo With this content:
+echo.
+echo {
+echo   "hooks": {
+echo     "user-prompt-submit": "%CLAUDE_BELL_DIR%\\scripts\\play-sound.bat gentle",
+echo     "assistant-response-complete": "%CLAUDE_BELL_DIR%\\scripts\\play-sound.bat success",
+echo     "tool-call-start": "%CLAUDE_BELL_DIR%\\scripts\\play-sound.bat alert",
+echo     "tool-call-complete": "%CLAUDE_BELL_DIR%\\scripts\\play-sound.bat gentle"
+echo   }
+echo }
+echo.
+
+:end
 pause

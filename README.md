@@ -20,14 +20,20 @@ Perfect for multitaskers who want to know when Claude needs attention without co
 
 ### Windows
 ```bash
-git clone https://github.com/yourusername/ClaudeBell.git
+git clone https://github.com/nicolasestrem/ClaudeBell.git
 cd ClaudeBell
 install.bat
 ```
 
+The installer will:
+- ✅ Test your sound system
+- ✅ Automatically configure Claude Code hooks
+- ✅ Create the proper settings.json file
+- ✅ Guide you through setup
+
 ### macOS/Linux
 ```bash
-git clone https://github.com/yourusername/ClaudeBell.git
+git clone https://github.com/nicolasestrem/ClaudeBell.git
 cd ClaudeBell
 chmod +x install.sh
 ./install.sh
@@ -56,42 +62,40 @@ chmod +x install.sh
 
 3. **Configure Claude Code:**
    
-   Add the hooks from `config/claude-settings.json` to your Claude Code settings:
+   Create `%APPDATA%\Claude\settings.json` (Windows) or `~/.config/claude/settings.json` (Unix) with:
    
-   ```bash
-   claude config edit
+   ```json
+   {
+     "hooks": {
+       "user-prompt-submit": "/path/to/ClaudeBell/scripts/play-sound.bat gentle",
+       "assistant-response-complete": "/path/to/ClaudeBell/scripts/play-sound.bat success",
+       "tool-call-start": "/path/to/ClaudeBell/scripts/play-sound.bat alert",
+       "tool-call-complete": "/path/to/ClaudeBell/scripts/play-sound.bat gentle"
+     }
+   }
    ```
-   
-   Then merge the hooks configuration from this project.
 
 ## 🎨 Customization
 
 ### Adding Custom Sounds
 
 1. Add your WAV files to the `sounds/` directory
-2. Name them according to the sound types:
-   - `default.wav` - Default notification
-   - `alert.wav` - Urgent attention needed
-   - `success.wav` - Task completed
-   - `error.wav` - Error occurred  
-   - `gentle-chime.wav` - Soft notification
+2. Primary sound file: `bip.wav` (automatically detected)
+3. Fallback: `notify.wav` 
+4. If no custom sounds exist, uses Windows system sounds
 
-### Configuring Hooks
+**Supported formats:** WAV files work best with Windows PowerShell SoundPlayer
 
-Edit your Claude Code settings to customize when sounds play:
+### Working Hook Events
 
-```json
-{
-  "hooks": {
-    "Notification": [{
-      "hooks": [{
-        "type": "command",
-        "command": "/path/to/ClaudeBell/scripts/play-sound.sh alert"
-      }]
-    }]
-  }
-}
-```
+ClaudeBell uses these reliable hook events:
+
+- `user-prompt-submit` - When you send a message to Claude
+- `assistant-response-complete` - When Claude finishes responding  
+- `tool-call-start` - Before Claude uses any tool
+- `tool-call-complete` - After Claude finishes using a tool
+
+**Note:** Hooks work most reliably for permission prompts and errors. Tool hooks may be intermittent.
 
 ## 🔧 Troubleshooting
 
