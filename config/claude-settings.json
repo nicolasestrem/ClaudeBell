@@ -1,0 +1,46 @@
+{
+  "hooks": {
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_BELL_DIR}/scripts/play-sound.${CLAUDE_BELL_EXT} alert"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_BELL_DIR}/scripts/play-sound.${CLAUDE_BELL_EXT} success"
+          }
+        ]
+      }
+    ],
+    "Error": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_BELL_DIR}/scripts/play-sound.${CLAUDE_BELL_EXT} error"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "toolName": "Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_BELL_DIR}/scripts/play-sound.${CLAUDE_BELL_EXT} gentle"
+          }
+        ]
+      }
+    ]
+  },
+  "preferredNotifChannel": "terminal_bell"
+}

@@ -1,0 +1,33 @@
+# Audio files (users will add their own)
+sounds/*.wav
+sounds/*.mp3
+sounds/*.ogg
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv
+
+# OS Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+
+# User config
+.env
+config/local-settings.json
