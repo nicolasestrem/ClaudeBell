@@ -15,9 +15,9 @@ ClaudeBell is a cross-platform notification sound system for Claude Code that pl
 
 ### Core Components
 
-1. **Hook System Integration** (`config/claude-settings.json`)
-   - Integrates with Claude Code's hook events: Notification, Stop, Error, PostToolUse
-   - Commands use environment variables: `${CLAUDE_BELL_DIR}` and `${CLAUDE_BELL_EXT}`
+1. **Hook System Integration** (`%APPDATA%\Claude\settings.json`)
+   - Integrates with Claude Code's hook events: user-prompt-submit, assistant-response-complete, tool-call-start, tool-call-complete
+   - Uses absolute paths for reliable execution from any working directory
 
 2. **Sound Playing Scripts**
    - `play-sound.bat` - Windows PowerShell-based player
@@ -25,11 +25,27 @@ ClaudeBell is a cross-platform notification sound system for Claude Code that pl
    - `play-sound.py` - Cross-platform Python fallback with optional pygame support
 
 ### Sound Type Mapping
-- `alert` - Urgent attention (Notification hook)
-- `success` - Task completion (Stop hook)
-- `error` - Errors occurred (Error hook)
-- `gentle` - Soft notification (PostToolUse hook)
+- `alert` - Tool execution starts (tool-call-start hook)
+- `success` - Response completion (assistant-response-complete hook)
+- `gentle` - User input and tool completion (user-prompt-submit, tool-call-complete hooks)
 - `default` - Standard notification
+
+### Working Hook Configuration
+
+The functional hook configuration format (in `%APPDATA%\Claude\settings.json`):
+
+```json
+{
+  "hooks": {
+    "user-prompt-submit": "C:\\Users\\nicol\\ClaudeBell\\scripts\\play-sound.bat gentle",
+    "assistant-response-complete": "C:\\Users\\nicol\\ClaudeBell\\scripts\\play-sound.bat success",
+    "tool-call-start": "C:\\Users\\nicol\\ClaudeBell\\scripts\\play-sound.bat alert",
+    "tool-call-complete": "C:\\Users\\nicol\\ClaudeBell\\scripts\\play-sound.bat gentle"
+  }
+}
+```
+
+**Note**: Hooks work reliably for permission prompts and errors. Tool-related hooks may be intermittent.
 
 ## Testing Commands
 

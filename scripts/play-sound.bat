@@ -10,25 +10,20 @@ if "%SOUND_TYPE%"=="" set "SOUND_TYPE=default"
 set "SCRIPT_DIR=%~dp0"
 set "SOUNDS_DIR=%SCRIPT_DIR%..\sounds"
 
-REM Map sound types to files
-if "%SOUND_TYPE%"=="alert" (
-    set "SOUND_FILE=%SOUNDS_DIR%\alert.wav"
-) else if "%SOUND_TYPE%"=="success" (
-    set "SOUND_FILE=%SOUNDS_DIR%\success.wav"
-) else if "%SOUND_TYPE%"=="error" (
-    set "SOUND_FILE=%SOUNDS_DIR%\error.wav"
-) else if "%SOUND_TYPE%"=="gentle" (
-    set "SOUND_FILE=%SOUNDS_DIR%\gentle-chime.wav"
-) else (
-    set "SOUND_FILE=%SOUNDS_DIR%\default.wav"
-)
+REM Use bip.wav as the primary sound file with absolute path
+set "SOUND_FILE=C:\Users\nicol\ClaudeBell\sounds\bip.wav"
 
-REM Check if sound file exists, if not use system sound
+REM Check if sound file exists, if not try notify.wav, then system sound
 if exist "%SOUND_FILE%" (
     powershell -Command "(New-Object System.Media.SoundPlayer '%SOUND_FILE%').PlaySync()"
 ) else (
-    REM Use Windows system notification sound as fallback
-    powershell -Command "[System.Media.SystemSounds]::Asterisk.Play()"
+    set "SOUND_FILE=%SOUNDS_DIR%\notify.wav"
+    if exist "%SOUND_FILE%" (
+        powershell -Command "(New-Object System.Media.SoundPlayer '%SOUND_FILE%').PlaySync()"
+    ) else (
+        REM Use Windows system notification sound as fallback
+        powershell -Command "[System.Media.SystemSounds]::Asterisk.Play()"
+    )
 )
 
 endlocal

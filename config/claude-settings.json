@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_BELL_DIR}/scripts/play-sound.${CLAUDE_BELL_EXT} alert"
+            "command": "C:\\Users\\nicol\\ClaudeBell\\scripts\\play-sound.bat alert"
           }
         ]
       }
@@ -15,7 +15,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_BELL_DIR}/scripts/play-sound.${CLAUDE_BELL_EXT} success"
+            "command": "C:\\Users\\nicol\\ClaudeBell\\scripts\\play-sound.bat success"
           }
         ]
       }
@@ -25,7 +25,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_BELL_DIR}/scripts/play-sound.${CLAUDE_BELL_EXT} error"
+            "command": "C:\\Users\\nicol\\ClaudeBell\\scripts\\play-sound.bat error"
           }
         ]
       }
@@ -36,7 +36,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_BELL_DIR}/scripts/play-sound.${CLAUDE_BELL_EXT} gentle"
+            "command": "C:\\Users\\nicol\\ClaudeBell\\scripts\\play-sound.bat gentle"
           }
         ]
       }

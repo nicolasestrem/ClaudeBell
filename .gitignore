@@ -31,3 +31,4 @@ desktop.ini
 # User config
 .env
 config/local-settings.json
+nul

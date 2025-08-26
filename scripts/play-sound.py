@@ -50,16 +50,8 @@ def main():
     script_dir = Path(__file__).parent
     sounds_dir = script_dir.parent / "sounds"
     
-    # Map sound types to files
-    sound_map = {
-        "alert": "alert.wav",
-        "success": "success.wav",
-        "error": "error.wav",
-        "gentle": "gentle-chime.wav",
-        "default": "default.wav"
-    }
-    
-    sound_filename = sound_map.get(sound_type, "default.wav")
+    # Use the same sound file for all types (for now)
+    sound_filename = "notify.wav"
     sound_file = sounds_dir / sound_filename
     
     # Play sound if file exists, otherwise system beep
