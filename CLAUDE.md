@@ -34,6 +34,25 @@ ClaudeBell is a cross-platform notification sound system for Claude Code that pl
 
 The functional hook configuration format (in `%APPDATA%\Claude\settings.json`):
 
+**Minimal Configuration (Recommended)** - Only triggers on permission prompts:
+```json
+{
+  "hooks": {
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:\\Users\\nicol\\ClaudeBell\\scripts\\play-sound.bat alert"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+**Full Configuration** - Triggers on all Claude actions (may be excessive):
 ```json
 {
   "hooks": {

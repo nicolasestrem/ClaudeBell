@@ -34,30 +34,6 @@ echo Creating Claude Code hooks configuration...
 
 echo { > "%SETTINGS_FILE%"
 echo   "hooks": { >> "%SETTINGS_FILE%"
-echo     "UserPromptSubmit": [{ >> "%SETTINGS_FILE%"
-echo       "hooks": [{ >> "%SETTINGS_FILE%"
-echo         "type": "command", >> "%SETTINGS_FILE%"
-echo         "command": "%CLAUDE_BELL_DIR%\\scripts\\play-sound.bat gentle" >> "%SETTINGS_FILE%"
-echo       }] >> "%SETTINGS_FILE%"
-echo     }], >> "%SETTINGS_FILE%"
-echo     "Stop": [{ >> "%SETTINGS_FILE%"
-echo       "hooks": [{ >> "%SETTINGS_FILE%"
-echo         "type": "command", >> "%SETTINGS_FILE%"
-echo         "command": "%CLAUDE_BELL_DIR%\\scripts\\play-sound.bat success" >> "%SETTINGS_FILE%"
-echo       }] >> "%SETTINGS_FILE%"
-echo     }], >> "%SETTINGS_FILE%"
-echo     "PreToolUse": [{ >> "%SETTINGS_FILE%"
-echo       "hooks": [{ >> "%SETTINGS_FILE%"
-echo         "type": "command", >> "%SETTINGS_FILE%"
-echo         "command": "%CLAUDE_BELL_DIR%\\scripts\\play-sound.bat alert" >> "%SETTINGS_FILE%"
-echo       }] >> "%SETTINGS_FILE%"
-echo     }], >> "%SETTINGS_FILE%"
-echo     "PostToolUse": [{ >> "%SETTINGS_FILE%"
-echo       "hooks": [{ >> "%SETTINGS_FILE%"
-echo         "type": "command", >> "%SETTINGS_FILE%"
-echo         "command": "%CLAUDE_BELL_DIR%\\scripts\\play-sound.bat gentle" >> "%SETTINGS_FILE%"
-echo       }] >> "%SETTINGS_FILE%"
-echo     }], >> "%SETTINGS_FILE%"
 echo     "Notification": [{ >> "%SETTINGS_FILE%"
 echo       "hooks": [{ >> "%SETTINGS_FILE%"
 echo         "type": "command", >> "%SETTINGS_FILE%"
@@ -88,8 +64,7 @@ echo - Primary sound file: bip.wav
 echo - Fallback: Windows system sounds
 echo.
 echo Sound notifications will trigger on:
-echo - Permission prompts and errors (most reliable)
-echo - User input and tool execution (may vary)
+echo - Permission prompts and errors ONLY (minimal configuration)
 echo.
 echo Restart Claude Code to activate the hooks.
 echo.
@@ -107,30 +82,6 @@ echo With this content:
 echo.
 echo {
 echo   "hooks": {
-echo     "UserPromptSubmit": [{
-echo       "hooks": [{
-echo         "type": "command",
-echo         "command": "%CLAUDE_BELL_DIR%\\scripts\\play-sound.bat gentle"
-echo       }]
-echo     }],
-echo     "Stop": [{
-echo       "hooks": [{
-echo         "type": "command",
-echo         "command": "%CLAUDE_BELL_DIR%\\scripts\\play-sound.bat success"
-echo       }]
-echo     }],
-echo     "PreToolUse": [{
-echo       "hooks": [{
-echo         "type": "command",
-echo         "command": "%CLAUDE_BELL_DIR%\\scripts\\play-sound.bat alert"
-echo       }]
-echo     }],
-echo     "PostToolUse": [{
-echo       "hooks": [{
-echo         "type": "command",
-echo         "command": "%CLAUDE_BELL_DIR%\\scripts\\play-sound.bat gentle"
-echo       }]
-echo     }],
 echo     "Notification": [{
 echo       "hooks": [{
 echo         "type": "command",
