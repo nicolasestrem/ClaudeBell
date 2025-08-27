@@ -23,16 +23,16 @@ if "%SOUND_TYPE%"=="alert" (
 
 REM Try to play the mapped sound file
 if exist "%SOUND_FILE%" (
-    powershell.exe -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -Command "& { try { Add-Type -AssemblyName System.Windows.Forms; $player = New-Object System.Media.SoundPlayer '%SOUND_FILE%'; $player.PlaySync(); $player.Dispose() } catch { try { [System.Media.SystemSounds]::Asterisk.Play() } catch { } } }" 2>nul
+    powershell -NoProfile -ExecutionPolicy Bypass -Command "try { (New-Object System.Media.SoundPlayer '%SOUND_FILE%').PlaySync() } catch { [System.Media.SystemSounds]::Asterisk.Play() }"
 ) else (
     REM Try alternative sound files if the mapped one doesn't exist
     if exist "%SOUNDS_DIR%\bip.wav" (
-        powershell.exe -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -Command "& { try { Add-Type -AssemblyName System.Windows.Forms; $player = New-Object System.Media.SoundPlayer '%SOUNDS_DIR%\bip.wav'; $player.PlaySync(); $player.Dispose() } catch { try { [System.Media.SystemSounds]::Asterisk.Play() } catch { } } }" 2>nul
+        powershell -NoProfile -ExecutionPolicy Bypass -Command "try { (New-Object System.Media.SoundPlayer '%SOUNDS_DIR%\bip.wav').PlaySync() } catch { [System.Media.SystemSounds]::Asterisk.Play() }"
     ) else if exist "%SOUNDS_DIR%\notify.wav" (
-        powershell.exe -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -Command "& { try { Add-Type -AssemblyName System.Windows.Forms; $player = New-Object System.Media.SoundPlayer '%SOUNDS_DIR%\notify.wav'; $player.PlaySync(); $player.Dispose() } catch { try { [System.Media.SystemSounds]::Asterisk.Play() } catch { } } }" 2>nul
+        powershell -NoProfile -ExecutionPolicy Bypass -Command "try { (New-Object System.Media.SoundPlayer '%SOUNDS_DIR%\notify.wav').PlaySync() } catch { [System.Media.SystemSounds]::Asterisk.Play() }"
     ) else (
         REM Use Windows system notification sound as fallback
-        powershell.exe -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -Command "& { try { [System.Media.SystemSounds]::Asterisk.Play() } catch { } }" 2>nul
+        powershell -NoProfile -ExecutionPolicy Bypass -Command "[System.Media.SystemSounds]::Asterisk.Play()"
     )
 )
 

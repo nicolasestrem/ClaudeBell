@@ -18,14 +18,7 @@ Perfect for multitaskers who want to know when Claude needs attention without co
 
 ## 🚀 Quick Install
 
-### Windows 11/10 (Recommended)
-```bash
-git clone https://github.com/nicolasestrem/ClaudeBell.git
-cd ClaudeBell
-install-win11.bat
-```
-
-### Windows (Legacy)
+### Windows
 ```bash
 git clone https://github.com/nicolasestrem/ClaudeBell.git
 cd ClaudeBell
@@ -121,22 +114,14 @@ ClaudeBell uses these reliable hook events:
 
 2. **Test manually:**
    ```bash
-   # Windows 11/10 (Recommended)
-   scripts\play-sound-secure.bat alert
-   
-   # Windows (Legacy)
+   # Windows
    scripts\play-sound.bat alert
    
    # Unix/Mac
    ./scripts/play-sound.sh alert
    ```
 
-3. **Check Windows 11 compatibility:**
-   ```bash
-   windows11-compatibility.bat
-   ```
-
-4. **Verify audio system:**
+3. **Verify audio system:**
    - **macOS:** Requires `afplay` (built-in)
    - **Linux:** Requires `paplay`, `aplay`, or `sox`
    - **Windows:** Uses PowerShell (built-in)

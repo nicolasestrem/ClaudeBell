@@ -18,12 +18,6 @@ echo.
 REM Test sound playback
 echo Testing sound playback...
 call "%CLAUDE_BELL_DIR%\scripts\play-sound.bat" alert
-if %ERRORLEVEL% NEQ 0 (
-    echo [WARN] Sound test may have failed - checking alternative script...
-    if exist "%CLAUDE_BELL_DIR%\scripts\play-sound-secure.bat" (
-        call "%CLAUDE_BELL_DIR%\scripts\play-sound-secure.bat" alert
-    )
-)
 timeout /t 2 /nobreak >nul
 echo.
 
