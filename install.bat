@@ -15,14 +15,17 @@ set "CLAUDE_BELL_DIR=%CLAUDE_BELL_DIR:~0,-1%"
 echo Installing ClaudeBell from: %CLAUDE_BELL_DIR%
 echo.
 
-REM Test sound playback
-echo Testing sound playback...
-call "%CLAUDE_BELL_DIR%\scripts\play-sound.bat" alert
-powershell -Command "Start-Sleep -Seconds 2"
+REM Test sound playback using PowerShell system sounds
+echo Testing Windows system sounds...
+powershell -c "[System.Media.SystemSounds]::Exclamation.Play()"
+powershell -Command "Start-Sleep -Seconds 1"
+powershell -c "[System.Media.SystemSounds]::Asterisk.Play()"
+powershell -Command "Start-Sleep -Seconds 1"
+powershell -c "[System.Media.SystemSounds]::Hand.Play()"
 echo.
 
 REM Check if Claude settings directory exists
-set "CLAUDE_SETTINGS_DIR=%APPDATA%\Claude"
+set "CLAUDE_SETTINGS_DIR=%USERPROFILE%\.claude"
 if not exist "%CLAUDE_SETTINGS_DIR%" (
     echo Creating Claude settings directory...
     mkdir "%CLAUDE_SETTINGS_DIR%"
@@ -81,7 +84,7 @@ echo   "hooks": { >> "%SETTINGS_FILE%"
 echo     "Notification": [{ >> "%SETTINGS_FILE%"
 echo       "hooks": [{ >> "%SETTINGS_FILE%"
 echo         "type": "command", >> "%SETTINGS_FILE%"
-echo         "command": "%CLAUDE_BELL_DIR%\\scripts\\play-sound.bat alert" >> "%SETTINGS_FILE%"
+echo         "command": "powershell.exe -c \"[System.Media.SystemSounds]::Exclamation.Play()\"" >> "%SETTINGS_FILE%"
 echo       }] >> "%SETTINGS_FILE%"
 echo     }] >> "%SETTINGS_FILE%"
 echo   } >> "%SETTINGS_FILE%"
@@ -145,7 +148,7 @@ echo   "hooks": {
 echo     "Notification": [{
 echo       "hooks": [{
 echo         "type": "command",
-echo         "command": "%CLAUDE_BELL_DIR%\\scripts\\play-sound.bat alert"
+echo         "command": "powershell.exe -c \"[System.Media.SystemSounds]::Exclamation.Play()\""
 echo       }]
 echo     }]
 echo   }

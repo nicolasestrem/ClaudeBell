@@ -1,6 +1,6 @@
 # 🔔 ClaudeBell
 
-> Never miss a Claude moment! A cross-platform notification sound system for Claude Code.
+> Never miss a Claude moment! A notification sound system for Claude Code.
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-brightgreen.svg)
@@ -8,17 +8,21 @@
 
 ## 🎯 What is ClaudeBell?
 
-ClaudeBell adds audio notifications to Claude Code, playing sounds when:
+ClaudeBell provides audio notifications for Claude Code using native system sounds. It alerts you when:
 - 🚨 Claude needs your permission or input
-- ✅ Tasks complete successfully
-- ❌ Errors occur
-- 🎵 Custom events you define
+- ✅ Claude completes responses 
+- 🔧 Tools are being executed
+- ⚡ Any Claude Code hook event occurs
 
-Perfect for multitaskers who want to know when Claude needs attention without constantly watching the terminal!
+Perfect for multitaskers who want audio cues when Claude needs attention!
+
+## ⚠️ Important Notice: Configuration Complexity
+
+Claude Code checks **multiple configuration files** that can conflict with each other. This project exposed a major issue where hooks can be defined in 6+ different locations, causing unexpected behavior. See the [Configuration Management](#configuration-management) section for details.
 
 ## 🚀 Quick Install
 
-### Windows
+### Windows (PowerShell System Sounds)
 ```bash
 git clone https://github.com/nicolasestrem/ClaudeBell.git
 cd ClaudeBell
@@ -26,15 +30,40 @@ install.bat
 ```
 
 The installer will:
-- ✅ Test your sound system
-- ✅ Automatically configure Claude Code hooks
-- ✅ Create the proper settings.json file
-- ✅ Guide you through setup
+- ✅ Test Windows system sounds
+- ✅ Configure Claude Code hooks in `%USERPROFILE%\.claude\settings.json`
+- ✅ Set up three notification types (Exclamation, Asterisk, Hand)
+- ⚠️ Warn about existing configuration conflicts
 
-**Important:** For reliable hook triggering on Windows, run Claude Code as Administrator:
-```bash
-# Right-click Command Prompt → "Run as administrator"
-claude
+**After installation, restart Claude Code for hooks to take effect!**
+
+### Alternative: Manual PowerShell Setup (Recommended)
+
+For a simpler setup, add this to `%USERPROFILE%\.claude\settings.json`:
+
+```json
+{
+  "hooks": {
+    "Notification": [{
+      "hooks": [{
+        "type": "command",
+        "command": "powershell.exe -c \"[System.Media.SystemSounds]::Exclamation.Play()\""
+      }]
+    }],
+    "PreToolUse": [{
+      "hooks": [{
+        "type": "command",
+        "command": "powershell.exe -c \"[System.Media.SystemSounds]::Asterisk.Play()\""
+      }]
+    }],
+    "Stop": [{
+      "hooks": [{
+        "type": "command",
+        "command": "powershell.exe -c \"[System.Media.SystemSounds]::Hand.Play()\""
+      }]
+    }]
+  }
+}
 ```
 
 ### macOS/Linux
@@ -45,149 +74,165 @@ chmod +x install.sh
 ./install.sh
 ```
 
-## 📦 Manual Installation
+## 📦 What's Included
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/yourusername/ClaudeBell.git
-   ```
+```
+ClaudeBell/
+├── scripts/           # Platform-specific sound scripts
+│   ├── play-sound.bat # Windows PowerShell player
+│   ├── play-sound.sh  # Unix/Mac shell script
+│   └── play-sound.py  # Python fallback
+├── sounds/            # Custom WAV files (optional)
+├── install.bat        # Windows installer
+├── uninstall.bat      # Windows uninstaller
+├── deactivate.bat     # Temporarily disable hooks
+└── CLAUDE.md          # Detailed troubleshooting guide
+```
 
-2. **Set environment variables:**
-   
-   **Windows (PowerShell):**
-   ```powershell
-   $env:CLAUDE_BELL_DIR = "C:\path\to\ClaudeBell"
-   $env:CLAUDE_BELL_EXT = "bat"
-   ```
-   
-   **Unix/Linux/Mac:**
-   ```bash
-   export CLAUDE_BELL_DIR="/path/to/ClaudeBell"
-   export CLAUDE_BELL_EXT="sh"
-   ```
+## 🎨 Sound Options
 
-3. **Configure Claude Code:**
-   
-   Create `%APPDATA%\Claude\settings.json` (Windows) or `~/.config/claude/settings.json` (Unix) with:
-   
-   ```json
-   {
-     "hooks": {
-       "user-prompt-submit": "/path/to/ClaudeBell/scripts/play-sound.bat gentle",
-       "assistant-response-complete": "/path/to/ClaudeBell/scripts/play-sound.bat success",
-       "tool-call-start": "/path/to/ClaudeBell/scripts/play-sound.bat alert",
-       "tool-call-complete": "/path/to/ClaudeBell/scripts/play-sound.bat gentle"
-     }
-   }
-   ```
+### Windows System Sounds (No Files Needed!)
 
-## 🎨 Customization
+Using PowerShell's built-in SystemSounds class:
+- `[System.Media.SystemSounds]::Asterisk` - Info/start sound
+- `[System.Media.SystemSounds]::Exclamation` - Alert/warning sound
+- `[System.Media.SystemSounds]::Hand` - Stop/error sound
+- `[System.Media.SystemSounds]::Question` - Query sound
+- `[System.Media.SystemSounds]::Beep` - Simple beep
 
-### Adding Custom Sounds
+### Custom WAV Files (Optional)
 
-1. Add your WAV files to the `sounds/` directory
-2. Primary sound file: `bip.wav` (automatically detected)
-3. Fallback: `notify.wav` 
-4. If no custom sounds exist, uses Windows system sounds
+Place WAV files in the `sounds/` directory:
+- `bip.wav` - Primary sound
+- `notify.wav` - Fallback sound
+- Any other `.wav` files for custom events
 
-**Supported formats:** WAV files work best with Windows PowerShell SoundPlayer
+## 🔧 Configuration Management
 
-### Working Hook Events
+### ⚠️ The Configuration File Nightmare
 
-ClaudeBell uses these reliable hook events:
+Claude Code checks these files **in priority order** (Windows paths shown):
 
-- `user-prompt-submit` - When you send a message to Claude
-- `assistant-response-complete` - When Claude finishes responding  
-- `tool-call-start` - Before Claude uses any tool
-- `tool-call-complete` - After Claude finishes using a tool
+1. **`%USERPROFILE%\.claude\settings.json`** ← **PRIMARY** (highest priority)
+2. **`%USERPROFILE%\.claude\settings.local.json`** ← Local overrides
+3. **`%APPDATA%\Claude\settings.json`** ← Application config
+4. **`%APPDATA%\Claude\claude-settings.json`** ← Legacy config
+5. **`{project}\.claude\settings.json`** ← Project-specific
+6. **`{project}\config\claude-settings.json`** ← Old format
 
-**Note:** Hooks work most reliably for permission prompts and errors. Tool hooks may be intermittent.
+**Problem**: Hooks in ANY of these files will execute, potentially causing multiple notifications!
 
-## 🔧 Troubleshooting
+### Troubleshooting Excessive Notifications
 
-### No Sound Playing?
+If you're getting too many sounds:
 
-1. **Check script permissions:**
-   ```bash
-   chmod +x scripts/play-sound.sh  # Unix/Mac
-   ```
-
-2. **Test manually:**
+1. **Check ALL config files:**
    ```bash
    # Windows
-   scripts\play-sound.bat alert
+   notepad %USERPROFILE%\.claude\settings.json
+   notepad %USERPROFILE%\.claude\settings.local.json
+   notepad %APPDATA%\Claude\settings.json
    
    # Unix/Mac
-   ./scripts/play-sound.sh alert
+   cat ~/.claude/settings.json
+   cat ~/.claude/settings.local.json
    ```
 
-3. **Verify audio system:**
-   - **macOS:** Requires `afplay` (built-in)
-   - **Linux:** Requires `paplay`, `aplay`, or `sox`
-   - **Windows:** Uses PowerShell (built-in)
+2. **Remove unwanted hooks** - Keep only what you need
+3. **Use ONE config file** - We recommend `%USERPROFILE%\.claude\settings.json`
+4. **Restart Claude Code** after changes
 
-### Python Fallback
+## 🛠️ Management Scripts
 
-If shell scripts don't work, use the Python version:
-
+### Deactivate (Temporary)
 ```bash
-python scripts/play-sound.py alert
+# Windows
+deactivate.bat
+
+# Unix/Mac  
+./deactivate.sh
 ```
 
-Optional: Install pygame for better audio support:
+Options:
+- Remove all hooks completely
+- Backup hooks for easy reactivation
+- Selective hook management
+
+### Uninstall (Complete Removal)
 ```bash
-pip install pygame
+# Windows
+uninstall.bat
+
+# Unix/Mac
+./uninstall.sh
 ```
 
-## 🛠️ Supported Platforms
+This will:
+- Remove all ClaudeBell hooks from all configs
+- Delete backup files
+- Optionally remove the ClaudeBell directory
 
-- ✅ Windows 10/11 (PowerShell)
-- ✅ macOS (10.15+)
-- ✅ Ubuntu/Debian Linux
-- ✅ Fedora/RHEL Linux
-- ✅ WSL2
-- ✅ Git Bash on Windows
+## 🐛 Troubleshooting
 
-## 📝 Configuration Options
+### No Sound?
 
-### Sound Types
+1. **Test system sounds manually:**
+   ```powershell
+   # Windows PowerShell
+   [System.Media.SystemSounds]::Exclamation.Play()
+   
+   # macOS
+   afplay /System/Library/Sounds/Ping.aiff
+   
+   # Linux
+   paplay /usr/share/sounds/freedesktop/stereo/message.oga
+   ```
 
-- `default` - Standard notification
-- `alert` - Urgent, requires immediate attention
-- `success` - Task completed successfully
-- `error` - Error or failure occurred
-- `gentle` - Soft, non-intrusive notification
+2. **Check Windows sound settings:**
+   - Open Sound settings → Sound Control Panel
+   - Verify "Windows Default" sound scheme is selected
+   - Test sounds in "Program Events" list
 
-### Hook Events
+3. **Verify hook configuration:**
+   - Hooks must be properly formatted JSON
+   - Commands must use escaped quotes: `\"`
+   - Restart Claude Code after changes
 
-- `Notification` - Claude needs permission
-- `Stop` - Claude finished responding
-- `PostToolUse` - After tool execution
-- `Error` - When errors occur
+### Hooks Not Triggering?
+
+- **Known issue**: Claude Code hooks can be intermittent
+- **Most reliable**: `Notification` hook for permission prompts
+- **Less reliable**: Tool-related hooks (PreToolUse, PostToolUse)
+- **Solution**: Restart Claude Code, ensure clean config
+
+## 📝 Available Hook Events
+
+- **`Notification`** - Permission requests, important alerts
+- **`PreToolUse`** - Before tool execution
+- **`PostToolUse`** - After tool completion  
+- **`Stop`** - Response finished
+- **`UserPromptSubmit`** - User input sent
+- **`Error`** - Errors occurred
 
 ## 🤝 Contributing
 
-We love contributions! Feel free to:
+We discovered and documented major Claude Code configuration issues! Help us improve:
 
-1. 🐛 Report bugs
-2. 💡 Suggest new features
-3. 🔊 Share your custom sound packs
-4. 📖 Improve documentation
+1. 🐛 Report configuration conflicts
+2. 💡 Suggest simpler notification methods
+3. 📖 Improve documentation
+4. 🔊 Share cross-platform solutions
 
 ## 📜 License
 
 MIT License - see [LICENSE](LICENSE) file for details.
 
-## 🌟 Show Your Support
-
-If ClaudeBell helps you stay productive, give it a ⭐ on GitHub!
-
 ## 🔗 Links
 
 - [Claude Code Documentation](https://docs.anthropic.com/claude-code)
-- [Report Issues](https://github.com/yourusername/ClaudeBell/issues)
-- [Discussions](https://github.com/yourusername/ClaudeBell/discussions)
+- [Report Issues](https://github.com/nicolasestrem/ClaudeBell/issues)
+- [Configuration Nightmare Story](CLAUDE.md#the-configuration-nightmare-)
 
 ---
 
-Made with 🎵 by the Claude Code community
+Made with 🎵 and frustration by someone who just wanted notification sounds to work properly
