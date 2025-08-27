@@ -1,7 +1,7 @@
 {
   "permissions": {
     "allow": [
-      "Bash(powershell:*)"
+      "Bash(dir \"C:\\Users\\nicol\\.claude\")"
     ],
     "deny": [],
     "ask": []
