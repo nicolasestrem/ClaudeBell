@@ -80,10 +80,56 @@ chmod +x install.sh
    ```json
    {
      "hooks": {
-       "user-prompt-submit": "/path/to/ClaudeBell/scripts/play-sound.bat gentle",
-       "assistant-response-complete": "/path/to/ClaudeBell/scripts/play-sound.bat success",
-       "tool-call-start": "/path/to/ClaudeBell/scripts/play-sound.bat alert",
-       "tool-call-complete": "/path/to/ClaudeBell/scripts/play-sound.bat gentle"
+       "UserPromptSubmit": [
+         {
+           "hooks": [
+             {
+               "type": "command",
+               "command": "/path/to/ClaudeBell/scripts/play-sound.bat gentle"
+             }
+           ]
+         }
+       ],
+       "Stop": [
+         {
+           "hooks": [
+             {
+               "type": "command",
+               "command": "/path/to/ClaudeBell/scripts/play-sound.bat success"
+             }
+           ]
+         }
+       ],
+       "PreToolUse": [
+         {
+           "hooks": [
+             {
+               "type": "command",
+               "command": "/path/to/ClaudeBell/scripts/play-sound.bat alert"
+             }
+           ]
+         }
+       ],
+       "PostToolUse": [
+         {
+           "hooks": [
+             {
+               "type": "command",
+               "command": "/path/to/ClaudeBell/scripts/play-sound.bat gentle"
+             }
+           ]
+         }
+       ],
+       "Notification": [
+         {
+           "hooks": [
+             {
+               "type": "command",
+               "command": "/path/to/ClaudeBell/scripts/play-sound.bat alert"
+             }
+           ]
+         }
+       ]
      }
    }
    ```
@@ -103,12 +149,13 @@ chmod +x install.sh
 
 ClaudeBell uses these reliable hook events:
 
-- `user-prompt-submit` - When you send a message to Claude
-- `assistant-response-complete` - When Claude finishes responding  
-- `tool-call-start` - Before Claude uses any tool
-- `tool-call-complete` - After Claude finishes using a tool
+- `UserPromptSubmit` - When you send a message to Claude
+- `Stop` - When Claude finishes responding  
+- `PreToolUse` - Before Claude uses any tool
+- `PostToolUse` - After Claude finishes using a tool
+- `Notification` - When Claude needs user permission or attention
 
-**Note:** Hooks work most reliably for permission prompts and errors. Tool hooks may be intermittent.
+**Note:** Hooks work most reliably for permission prompts (`Notification`). Tool hooks may be intermittent.
 
 ## 🔧 Troubleshooting
 
@@ -175,10 +222,11 @@ pip install pygame
 
 ### Hook Events
 
-- `Notification` - Claude needs permission
+- `Notification` - Claude needs permission or attention
 - `Stop` - Claude finished responding
+- `UserPromptSubmit` - When user sends a message
+- `PreToolUse` - Before tool execution
 - `PostToolUse` - After tool execution
-- `Error` - When errors occur
 
 ## 🤝 Contributing
 

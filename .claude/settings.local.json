@@ -27,12 +27,22 @@
         ]
       }
     ],
-    "Error": [
+    "PreToolUse": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "C:\\Users\\nicol\\ClaudeBell\\scripts\\play-sound.bat error"
+            "command": "C:\\Users\\nicol\\ClaudeBell\\scripts\\play-sound.bat alert"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:\\Users\\nicol\\ClaudeBell\\scripts\\play-sound.bat gentle"
           }
         ]
       }

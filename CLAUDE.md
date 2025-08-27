@@ -16,7 +16,7 @@ ClaudeBell is a cross-platform notification sound system for Claude Code that pl
 ### Core Components
 
 1. **Hook System Integration** (`%APPDATA%\Claude\settings.json`)
-   - Integrates with Claude Code's hook events: user-prompt-submit, assistant-response-complete, tool-call-start, tool-call-complete
+   - Integrates with Claude Code's hook events: UserPromptSubmit, Stop, PreToolUse, PostToolUse, Notification
    - Uses absolute paths for reliable execution from any working directory
 
 2. **Sound Playing Scripts**
@@ -25,9 +25,9 @@ ClaudeBell is a cross-platform notification sound system for Claude Code that pl
    - `play-sound.py` - Cross-platform Python fallback with optional pygame support
 
 ### Sound Type Mapping
-- `alert` - Tool execution starts (tool-call-start hook)
-- `success` - Response completion (assistant-response-complete hook)
-- `gentle` - User input and tool completion (user-prompt-submit, tool-call-complete hooks)
+- `alert` - Tool execution starts (PreToolUse hook) and permission requests (Notification hook)
+- `success` - Response completion (Stop hook)
+- `gentle` - User input (UserPromptSubmit) and tool completion (PostToolUse hooks)
 - `default` - Standard notification
 
 ### Working Hook Configuration
@@ -37,10 +37,56 @@ The functional hook configuration format (in `%APPDATA%\Claude\settings.json`):
 ```json
 {
   "hooks": {
-    "user-prompt-submit": "C:\\Users\\nicol\\ClaudeBell\\scripts\\play-sound.bat gentle",
-    "assistant-response-complete": "C:\\Users\\nicol\\ClaudeBell\\scripts\\play-sound.bat success",
-    "tool-call-start": "C:\\Users\\nicol\\ClaudeBell\\scripts\\play-sound.bat alert",
-    "tool-call-complete": "C:\\Users\\nicol\\ClaudeBell\\scripts\\play-sound.bat gentle"
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:\\Users\\nicol\\ClaudeBell\\scripts\\play-sound.bat gentle"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:\\Users\\nicol\\ClaudeBell\\scripts\\play-sound.bat success"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:\\Users\\nicol\\ClaudeBell\\scripts\\play-sound.bat alert"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:\\Users\\nicol\\ClaudeBell\\scripts\\play-sound.bat gentle"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:\\Users\\nicol\\ClaudeBell\\scripts\\play-sound.bat alert"
+          }
+        ]
+      }
+    ]
   }
 }
 ```
