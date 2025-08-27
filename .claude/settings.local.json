@@ -1,32 +1,41 @@
 {
   "permissions": {
     "allow": [
-      "Bash(claude config --help)",
-      "Bash(dir scripts)",
-      "Bash(cmd /c:*)",
-      "Bash(powershell:*)",
-      "Bash(claude config list)"
+      "Bash(powershell:*)"
     ],
-    "deny": []
+    "deny": [],
+    "ask": []
   },
   "hooks": {
-    "Notification": [{
-      "hooks": [{
-        "type": "command",
-        "command": "C:\\Users\\nicol\\ClaudeBell\\scripts\\play-sound.bat alert"
-      }]
-    }],
-    "Stop": [{
-      "hooks": [{
-        "type": "command",
-        "command": "C:\\Users\\nicol\\ClaudeBell\\scripts\\play-sound.bat success"
-      }]
-    }],
-    "Error": [{
-      "hooks": [{
-        "type": "command",
-        "command": "C:\\Users\\nicol\\ClaudeBell\\scripts\\play-sound.bat error"
-      }]
-    }]
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:\\Users\\nicol\\ClaudeBell\\scripts\\play-sound.bat alert"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:\\Users\\nicol\\ClaudeBell\\scripts\\play-sound.bat success"
+          }
+        ]
+      }
+    ],
+    "Error": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:\\Users\\nicol\\ClaudeBell\\scripts\\play-sound.bat error"
+          }
+        ]
+      }
+    ]
   }
 }
