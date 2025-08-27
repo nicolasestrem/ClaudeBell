@@ -17,16 +17,6 @@
         ]
       }
     ],
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "C:\\Users\\nicol\\ClaudeBell\\scripts\\play-sound.bat success"
-          }
-        ]
-      }
-    ],
     "Error": [
       {
         "hooks": [
