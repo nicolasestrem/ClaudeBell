@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(powershell:*)"
+      "Bash(powershell:*)",
+      "Bash(C:UsersnicolClaudeBellscriptsplay-sound.bat alert)",
+      "Bash(scripts\\play-sound.bat:*)"
     ],
     "deny": [],
     "ask": []
