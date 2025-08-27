@@ -90,56 +90,10 @@ set "SOUND_SCRIPT=%CLAUDE_BELL_DIR%\scripts\%SOUND_METHOD%"
 
 echo { > "%SETTINGS_FILE%"
 echo   "hooks": { >> "%SETTINGS_FILE%"
-echo     "UserPromptSubmit": [ >> "%SETTINGS_FILE%"
-echo       { >> "%SETTINGS_FILE%"
-echo         "hooks": [ >> "%SETTINGS_FILE%"
-echo           { >> "%SETTINGS_FILE%"
-echo             "type": "command", >> "%SETTINGS_FILE%"
-echo             "command": "%SOUND_SCRIPT% gentle" >> "%SETTINGS_FILE%"
-echo           } >> "%SETTINGS_FILE%"
-echo         ] >> "%SETTINGS_FILE%"
-echo       } >> "%SETTINGS_FILE%"
-echo     ], >> "%SETTINGS_FILE%"
-echo     "Stop": [ >> "%SETTINGS_FILE%"
-echo       { >> "%SETTINGS_FILE%"
-echo         "hooks": [ >> "%SETTINGS_FILE%"
-echo           { >> "%SETTINGS_FILE%"
-echo             "type": "command", >> "%SETTINGS_FILE%"
-echo             "command": "%SOUND_SCRIPT% success" >> "%SETTINGS_FILE%"
-echo           } >> "%SETTINGS_FILE%"
-echo         ] >> "%SETTINGS_FILE%"
-echo       } >> "%SETTINGS_FILE%"
-echo     ], >> "%SETTINGS_FILE%"
-echo     "PreToolUse": [ >> "%SETTINGS_FILE%"
-echo       { >> "%SETTINGS_FILE%"
-echo         "hooks": [ >> "%SETTINGS_FILE%"
-echo           { >> "%SETTINGS_FILE%"
-echo             "type": "command", >> "%SETTINGS_FILE%"
-echo             "command": "%SOUND_SCRIPT% alert" >> "%SETTINGS_FILE%"
-echo           } >> "%SETTINGS_FILE%"
-echo         ] >> "%SETTINGS_FILE%"
-echo       } >> "%SETTINGS_FILE%"
-echo     ], >> "%SETTINGS_FILE%"
-echo     "PostToolUse": [ >> "%SETTINGS_FILE%"
-echo       { >> "%SETTINGS_FILE%"
-echo         "hooks": [ >> "%SETTINGS_FILE%"
-echo           { >> "%SETTINGS_FILE%"
-echo             "type": "command", >> "%SETTINGS_FILE%"
-echo             "command": "%SOUND_SCRIPT% gentle" >> "%SETTINGS_FILE%"
-echo           } >> "%SETTINGS_FILE%"
-echo         ] >> "%SETTINGS_FILE%"
-echo       } >> "%SETTINGS_FILE%"
-echo     ], >> "%SETTINGS_FILE%"
-echo     "Notification": [ >> "%SETTINGS_FILE%"
-echo       { >> "%SETTINGS_FILE%"
-echo         "hooks": [ >> "%SETTINGS_FILE%"
-echo           { >> "%SETTINGS_FILE%"
-echo             "type": "command", >> "%SETTINGS_FILE%"
-echo             "command": "%SOUND_SCRIPT% alert" >> "%SETTINGS_FILE%"
-echo           } >> "%SETTINGS_FILE%"
-echo         ] >> "%SETTINGS_FILE%"
-echo       } >> "%SETTINGS_FILE%"
-echo     ] >> "%SETTINGS_FILE%"
+echo     "user-prompt-submit": "%SOUND_SCRIPT% gentle", >> "%SETTINGS_FILE%"
+echo     "assistant-response-complete": "%SOUND_SCRIPT% success", >> "%SETTINGS_FILE%"
+echo     "tool-call-start": "%SOUND_SCRIPT% alert", >> "%SETTINGS_FILE%"
+echo     "tool-call-complete": "%SOUND_SCRIPT% gentle" >> "%SETTINGS_FILE%"
 echo   } >> "%SETTINGS_FILE%"
 echo } >> "%SETTINGS_FILE%"
 
@@ -217,56 +171,10 @@ echo With this content:
 echo.
 echo {
 echo   "hooks": {
-echo     "UserPromptSubmit": [
-echo       {
-echo         "hooks": [
-echo           {
-echo             "type": "command",
-echo             "command": "%CLAUDE_BELL_DIR%\\scripts\\play-sound.bat gentle"
-echo           }
-echo         ]
-echo       }
-echo     ],
-echo     "Stop": [
-echo       {
-echo         "hooks": [
-echo           {
-echo             "type": "command",
-echo             "command": "%CLAUDE_BELL_DIR%\\scripts\\play-sound.bat success"
-echo           }
-echo         ]
-echo       }
-echo     ],
-echo     "PreToolUse": [
-echo       {
-echo         "hooks": [
-echo           {
-echo             "type": "command",
-echo             "command": "%CLAUDE_BELL_DIR%\\scripts\\play-sound.bat alert"
-echo           }
-echo         ]
-echo       }
-echo     ],
-echo     "PostToolUse": [
-echo       {
-echo         "hooks": [
-echo           {
-echo             "type": "command",
-echo             "command": "%CLAUDE_BELL_DIR%\\scripts\\play-sound.bat gentle"
-echo           }
-echo         ]
-echo       }
-echo     ],
-echo     "Notification": [
-echo       {
-echo         "hooks": [
-echo           {
-echo             "type": "command",
-echo             "command": "%CLAUDE_BELL_DIR%\\scripts\\play-sound.bat alert"
-echo           }
-echo         ]
-echo       }
-echo     ]
+echo     "user-prompt-submit": "%CLAUDE_BELL_DIR%\\scripts\\play-sound.bat gentle",
+echo     "assistant-response-complete": "%CLAUDE_BELL_DIR%\\scripts\\play-sound.bat success",
+echo     "tool-call-start": "%CLAUDE_BELL_DIR%\\scripts\\play-sound.bat alert",
+echo     "tool-call-complete": "%CLAUDE_BELL_DIR%\\scripts\\play-sound.bat gentle"
 echo   }
 echo }
 echo.
