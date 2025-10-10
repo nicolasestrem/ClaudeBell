@@ -85,33 +85,34 @@ fi
 echo ""
 
 # Instructions for Claude Code configuration
-cat << 'EOF'
+cat << EOF
 ===============================================
       Next Steps - Configure Claude Code      
 ===============================================
 
 1. Run: claude config edit
 
-2. Add the following hooks configuration:
+2. Add the following hooks configuration. This script has detected the
+   full path to the sound scripts for you.
 
 {
   "hooks": {
     "Notification": [{
       "hooks": [{
         "type": "command",
-        "command": "${CLAUDE_BELL_DIR}/scripts/play-sound.sh alert"
+        "command": "$CLAUDE_BELL_DIR/scripts/play-sound.sh alert"
       }]
     }],
     "Stop": [{
       "hooks": [{
         "type": "command",
-        "command": "${CLAUDE_BELL_DIR}/scripts/play-sound.sh success"
+        "command": "$CLAUDE_BELL_DIR/scripts/play-sound.sh success"
       }]
     }],
     "Error": [{
       "hooks": [{
         "type": "command",
-        "command": "${CLAUDE_BELL_DIR}/scripts/play-sound.sh error"
+        "command": "$CLAUDE_BELL_DIR/scripts/play-sound.sh error"
       }]
     }]
   }
