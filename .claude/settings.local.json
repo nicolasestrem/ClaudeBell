@@ -1,7 +1,7 @@
 {
   "permissions": {
     "allow": [
-      "Bash(powershell.exe:*)"
+      "Bash(gh issue:*)"
     ],
     "deny": [],
     "ask": []
