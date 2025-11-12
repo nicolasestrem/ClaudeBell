@@ -55,35 +55,43 @@ play_with_command() {
     # Detect OS and use appropriate player
     if [[ "$OSTYPE" == "darwin"* ]]; then
         if command -v afplay &> /dev/null; then
-            afplay "$file" &
-            return 0
-        elif command -v sox &> /dev/null; then
-            play "$file" &> /dev/null &
-            return 0
+            if afplay "$file" &> /dev/null; then
+                return 0
+            fi
+        elif command -v play &> /dev/null; then
+            if play "$file" &> /dev/null; then
+                return 0
+            fi
         fi
     elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
         if command -v paplay &> /dev/null; then
-            paplay "$file" &
-            return 0
+            if paplay "$file" &> /dev/null; then
+                return 0
+            fi
         elif command -v aplay &> /dev/null; then
-            aplay "$file" &> /dev/null &
-            return 0
-        elif command -v sox &> /dev/null; then
-            play "$file" &> /dev/null &
-            return 0
+            if aplay "$file" &> /dev/null; then
+                return 0
+            fi
+        elif command -v play &> /dev/null; then
+            if play "$file" &> /dev/null; then
+                return 0
+            fi
         elif command -v mplayer &> /dev/null; then
-            mplayer -really-quiet "$file" &> /dev/null &
-            return 0
+            if mplayer -really-quiet "$file" &> /dev/null; then
+                return 0
+            fi
         fi
     elif [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" ]]; then
         if command -v powershell.exe &> /dev/null; then
-            powershell.exe -Command "(New-Object System.Media.SoundPlayer '$file').Play()" &> /dev/null &
-            return 0
+            if powershell.exe -Command "(New-Object System.Media.SoundPlayer '$file').Play()" &> /dev/null; then
+                return 0
+            fi
         fi
     else
         if command -v play &> /dev/null; then
-            play "$file" &> /dev/null &
-            return 0
+            if play "$file" &> /dev/null; then
+                return 0
+            fi
         fi
     fi
 
