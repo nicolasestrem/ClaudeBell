@@ -65,16 +65,15 @@ pause >nul
 REM Test 4: Check for custom sounds
 echo.
 echo [TEST 4] Checking for custom sound files...
-if exist "%CLAUDE_BELL_DIR%\sounds\bip.wav" (
-    echo [PASS] Custom bip.wav found
-) else (
-    echo [INFO] No custom bip.wav - using system sounds
+set "FOUND_CUSTOM=0"
+for %%S in (alert success error gentle-chime default) do (
+    if exist "%CLAUDE_BELL_DIR%\sounds\%%S.wav" (
+        echo [PASS] Custom %%S.wav found
+        set "FOUND_CUSTOM=1"
+    )
 )
-
-if exist "%CLAUDE_BELL_DIR%\sounds\notify.wav" (
-    echo [PASS] Custom notify.wav found
-) else (
-    echo [INFO] No custom notify.wav - using system sounds
+if !FOUND_CUSTOM! == 0 (
+    echo [INFO] No custom WAV files detected - using system sounds
 )
 
 REM Test 5: Verify paths in settings

@@ -103,9 +103,11 @@ Using PowerShell's built-in SystemSounds class:
 ### Custom WAV Files (Optional)
 
 Place WAV files in the `sounds/` directory:
-- `bip.wav` - Primary sound
-- `notify.wav` - Fallback sound
-- Any other `.wav` files for custom events
+- `default.wav` - Generic fallback used when no specific file exists
+- `alert.wav` - Attention-grabbing notification
+- `success.wav` - Task completed confirmation
+- `error.wav` - Error or failure tone
+- `gentle-chime.wav` - Subtle prompt for softer events
 
 ## 🔧 Configuration Management
 

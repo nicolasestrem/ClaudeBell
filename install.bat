@@ -107,8 +107,8 @@ echo ClaudeBell is now installed and configured!
 echo.
 echo Your custom sounds:
 echo - Place WAV files in: %CLAUDE_BELL_DIR%\sounds\
-echo - Primary sound file: bip.wav
-echo - Fallback: Windows system sounds
+echo - Optional files in sounds\ (alert.wav, success.wav, error.wav, gentle-chime.wav, default.wav)
+echo - Missing files automatically fall back to Windows system sounds
 echo.
 echo Sound notifications will trigger on:
 echo - Permission prompts and errors ONLY (minimal configuration)
