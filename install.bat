@@ -66,7 +66,8 @@ if %CONFIG_CONFLICTS% GTR 0 (
     echo [CRITICAL] Found %CONFIG_CONFLICTS% existing configuration file(s)!
     echo.
     echo Multiple config files can cause hook conflicts and excessive notifications.
-    echo This installer will create: %APPDATA%\Claude\settings.json
+    echo This installer will create: %SETTINGS_FILE%
+    echo Note: Some Claude apps still read from %APPDATA%\Claude. Keep both locations tidy if you use them.
     echo.
     echo RECOMMENDATION: Clean up conflicting configs after installation.
     echo See CLAUDE.md for the full troubleshooting guide.
@@ -118,16 +119,19 @@ echo        Post-Installation Notes
 echo ===============================================
 echo.
 echo If you experience excessive notifications:
-echo 1. Check ~/.claude/settings.json (main global config)
+echo 1. Check %USERPROFILE%\.claude\settings.json (main global config)
 echo 2. Remove hooks from other config files 
 echo 3. See CLAUDE.md troubleshooting section
 echo.
 echo Configuration priority (highest to lowest):
 echo 1. %USERPROFILE%\.claude\settings.json
 echo 2. %USERPROFILE%\.claude\settings.local.json  
-echo 3. %APPDATA%\Claude\settings.json (this installer)
+echo 3. %APPDATA%\Claude\settings.json (legacy desktop config)
 echo 4. %APPDATA%\Claude\claude-settings.json
 echo 5. Project-specific configs
+echo.
+echo Note: This installer targets %USERPROFILE%\.claude while Claude Desktop may still monitor %APPDATA%\Claude.
+echo Keep both directories in sync if you rely on each environment.
 echo.
 echo Restart Claude Code to activate the hooks.
 echo.
@@ -139,7 +143,7 @@ echo ===============================================
 echo        Manual Configuration Required
 echo ===============================================
 echo.
-echo Please manually create: %APPDATA%\Claude\settings.json
+echo Please manually create: %SETTINGS_FILE%
 echo.
 echo With this content:
 echo.
