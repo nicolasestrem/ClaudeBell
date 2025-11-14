@@ -10,7 +10,7 @@
 
 ClaudeBell provides audio notifications for Claude Code using native system sounds. It alerts you when:
 - 🚨 Claude needs your permission or input
-- ✅ Claude completes responses 
+- ✅ Claude completes responses
 - 🔧 Tools are being executed
 - ⚡ Any Claude Code hook event occurs
 
@@ -32,15 +32,22 @@ Perfect for multitaskers who want audio cues when Claude needs attention!
 - 🧪 Added comprehensive test suite for installation verification
 - 📋 Documented the fix in BUG_REPORT.md
 
+**Documentation Accuracy Update**
+- ✅ Updated to reflect official Claude Code configuration system
+- ✅ Corrected hook event listings (9 total events supported)
+- ✅ Fixed configuration file locations and priority order
+- ✅ Added security warnings per official guidelines
+- ✅ Clarified hook types and limitations
+
 **Sound File Migration**: If upgrading from an older version, rename your custom sound files:
 - `bip.wav` → `alert.wav`
 - `notify.wav` → `success.wav`
 
 See [CHANGELOG.md](CHANGELOG.md) for complete version history.
 
-## ⚠️ Important Notice: Configuration Complexity
+## ⚠️ Important Notice: Configuration Management
 
-Claude Code checks **multiple configuration files** that can conflict with each other. This project exposed a major issue where hooks can be defined in 6+ different locations, causing unexpected behavior. See the [Configuration Management](#configuration-management) section for details.
+Claude Code uses a hierarchical configuration system with settings stored at multiple levels. Understanding this system is crucial for proper hook configuration. See the [Configuration Management](#configuration-management) section for details.
 
 ## 🚀 Quick Install
 
@@ -199,37 +206,54 @@ ln -s success.wav notify.wav
 
 ## 🔧 Configuration Management
 
-### ⚠️ The Configuration File Nightmare
+### Understanding Claude Code Configuration
 
-Claude Code checks these files **in priority order** (Windows paths shown):
+Per official Claude Code documentation, settings are stored in a **hierarchical system** with multiple levels:
 
-1. **`%USERPROFILE%\.claude\settings.json`** ← **PRIMARY** (highest priority)
-2. **`%USERPROFILE%\.claude\settings.local.json`** ← Local overrides
-3. **`%APPDATA%\Claude\settings.json`** ← Application config
-4. **`%APPDATA%\Claude\claude-settings.json`** ← Legacy config
-5. **`{project}\.claude\settings.json`** ← Project-specific
-6. **`{project}\config\claude-settings.json`** ← Old format
+**Configuration Priority (Highest to Lowest):**
+1. **Enterprise Managed Policies** (`managed-settings.json`) - Cannot be overridden
+2. **Command-line Arguments** - Temporary session overrides
+3. **Local Project Settings** (`.claude/settings.local.json`) - Personal, git-ignored
+4. **Shared Project Settings** (`.claude/settings.json`) - Team-wide, version controlled
+5. **User Global Settings** (`~/.claude/settings.json`) - Your personal defaults
 
-**Problem**: Hooks in ANY of these files will execute, potentially causing multiple notifications!
+**Important Notes:**
+- Higher priority settings override lower priority ones
+- **Hooks in ALL matching config files will execute** - not just the highest priority!
+- For personal notifications, use **user global config** (`~/.claude/settings.json`)
+- For project-specific notifications, use **project local config** (`.claude/settings.local.json`, git-ignored)
 
-### Troubleshooting Excessive Notifications
+### Configuration File Locations
 
-If you're getting too many sounds:
+**Unix/Mac:**
+- `~/.claude/settings.json` - User global config
+- `{project}/.claude/settings.json` - Project shared config
+- `{project}/.claude/settings.local.json` - Project local config (git-ignored)
+
+**Windows:**
+- `%USERPROFILE%\.claude\settings.json` - User global config
+- `{project}\.claude\settings.json` - Project shared config
+- `{project}\.claude\settings.local.json` - Project local config (git-ignored)
+
+### Troubleshooting Multiple Notifications
+
+If you're getting too many sounds, you may have hooks configured in multiple files:
 
 1. **Check ALL config files:**
    ```bash
    # Windows
    notepad %USERPROFILE%\.claude\settings.json
-   notepad %USERPROFILE%\.claude\settings.local.json
-   notepad %APPDATA%\Claude\settings.json
-   
+   notepad .\.claude\settings.json
+   notepad .\.claude\settings.local.json
+
    # Unix/Mac
    cat ~/.claude/settings.json
-   cat ~/.claude/settings.local.json
+   cat .claude/settings.json
+   cat .claude/settings.local.json
    ```
 
 2. **Remove unwanted hooks** - Keep only what you need
-3. **Use ONE config file** - We recommend `%USERPROFILE%\.claude\settings.json`
+3. **Use ONE config file** - We recommend `~/.claude/settings.json` for personal notifications
 4. **Restart Claude Code** after changes
 
 ## 🛠️ Management Scripts
@@ -239,7 +263,7 @@ If you're getting too many sounds:
 # Windows
 deactivate.bat
 
-# Unix/Mac  
+# Unix/Mac
 ./deactivate.sh
 ```
 
@@ -309,10 +333,10 @@ python scripts/play-sound.py alert
    ```powershell
    # Windows PowerShell
    [System.Media.SystemSounds]::Exclamation.Play()
-   
+
    # macOS
    afplay /System/Library/Sounds/Ping.aiff
-   
+
    # Linux
    paplay /usr/share/sounds/freedesktop/stereo/message.oga
    ```
@@ -329,28 +353,58 @@ python scripts/play-sound.py alert
 
 ### Hooks Not Triggering?
 
-- **Known issue**: Claude Code hooks can be intermittent
+- **Known limitation**: Claude Code hooks can be intermittent
 - **Most reliable**: `Notification` hook for permission prompts
-- **Less reliable**: Tool-related hooks (PreToolUse, PostToolUse)
-- **Solution**: Restart Claude Code, ensure clean config
+- **Less reliable**: Tool-related hooks (PreToolUse, PostToolUse) depend on internal state
+- **Solution**: Restart Claude Code, ensure clean config, use absolute paths
 
 ## 📝 Available Hook Events
 
-- **`Notification`** - Permission requests, important alerts
-- **`PreToolUse`** - Before tool execution
-- **`PostToolUse`** - After tool completion  
+Claude Code supports **9 hook events** (per official documentation):
+
+**Tool-related:**
+- **`PreToolUse`** - Before tool execution (can block)
+- **`PostToolUse`** - After tool completion
+
+**Session management:**
+- **`SessionStart`** - Session initialization/resumption
+- **`SessionEnd`** - Session termination
+- **`PreCompact`** - Before context compaction
+
+**Agent control:**
 - **`Stop`** - Response finished
+- **`SubagentStop`** - Subagent completion
 - **`UserPromptSubmit`** - User input sent
-- **`Error`** - Errors occurred
+
+**System:**
+- **`Notification`** - Permission requests, important alerts (most reliable)
+
+**Note**: ClaudeBell primarily uses `Notification`, `PreToolUse`, `PostToolUse`, `Stop`, and `UserPromptSubmit`. The other events (`SubagentStop`, `PreCompact`, `SessionStart`, `SessionEnd`) are available for advanced use cases.
+
+## 🔒 Security Considerations
+
+**⚠️ IMPORTANT SECURITY WARNING**
+
+Per official Claude Code documentation:
+> "Claude Code hooks execute arbitrary shell commands on your system automatically during the agent loop with your current environment's credentials."
+
+**Security Best Practices:**
+1. **Review all hook commands** before adding them to configuration
+2. **Use absolute paths** to prevent command injection
+3. **Limit hook scope** to only the events you need
+4. **Be cautious with project configs** that others might modify
+5. **Never run untrusted hook scripts** without reviewing them first
+
+The ClaudeBell scripts are simple sound players with no network access, but you should always review any hook scripts before using them.
 
 ## 🤝 Contributing
 
-We discovered and documented major Claude Code configuration issues! Help us improve:
+Help us improve ClaudeBell!
 
-1. 🐛 Report configuration conflicts
-2. 💡 Suggest simpler notification methods
+1. 🐛 Report bugs and configuration issues
+2. 💡 Suggest new features and notification scenarios
 3. 📖 Improve documentation
-4. 🔊 Share cross-platform solutions
+4. 🔊 Share cross-platform sound solutions
 
 ## 📜 License
 
@@ -358,12 +412,15 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ## 🔗 Links
 
-- [Claude Code Documentation](https://docs.anthropic.com/claude-code)
+- [Claude Code Official Documentation](https://code.claude.com/docs/)
+- [Claude Code Hooks Guide](https://code.claude.com/docs/en/hooks-guide.md)
+- [Claude Code Hooks Reference](https://code.claude.com/docs/en/hooks.md)
+- [Claude Code Settings Documentation](https://code.claude.com/docs/en/settings.md)
 - [Report Issues](https://github.com/nicolasestrem/ClaudeBell/issues)
 - [Version History (CHANGELOG.md)](CHANGELOG.md)
-- [Configuration Nightmare Story](CLAUDE.md#the-configuration-nightmare-)
+- [Detailed Architecture & Troubleshooting (CLAUDE.md)](CLAUDE.md)
 - [Bug Reports & Fixes](BUG_REPORT.md)
 
 ---
 
-Made with 🎵 and frustration by someone who just wanted notification sounds to work properly
+Made with 🎵 for the Claude Code community

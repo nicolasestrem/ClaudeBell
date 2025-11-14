@@ -12,17 +12,8 @@
         "hooks": [
           {
             "type": "command",
+            "comment": "Note: Error hook is not documented in official Claude Code docs, using Notification instead",
             "command": "C:\\Users\\nicol\\ClaudeBell\\scripts\\play-sound.bat alert"
-          }
-        ]
-      }
-    ],
-    "Error": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "C:\\Users\\nicol\\ClaudeBell\\scripts\\play-sound.bat error"
           }
         ]
       }
