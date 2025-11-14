@@ -5,10 +5,46 @@ All notable changes to ClaudeBell will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [Unreleased] - 2025-01
+
+### Changed - Documentation Accuracy Update
+
+**Critical documentation corrections to align with official Claude Code specifications:**
+
+#### Configuration System Corrections
+- ✅ **Fixed configuration file locations** - Removed incorrect references to `%APPDATA%\Claude\settings.json` and `config/claude-settings.json` that are not mentioned in official Claude Code documentation
+- ✅ **Corrected configuration priority order** - Updated from incorrect 6-level system to official 5-level hierarchy:
+  1. Enterprise Managed Policies (highest)
+  2. Command-line Arguments
+  3. Local Project Settings (`.claude/settings.local.json`)
+  4. Shared Project Settings (`.claude/settings.json`)
+  5. User Global Settings (`~/.claude/settings.json`) (lowest)
+- ✅ **Clarified configuration behavior** - Emphasized that hooks in ALL matching config files execute, not just highest priority
+
+#### Hook Events Corrections
+- ✅ **Updated hook events list** - Corrected from 6 events to official 9 events:
+  - **Added**: SubagentStop, PreCompact, SessionStart, SessionEnd
+  - **Noted**: "Error" hook is NOT documented in official Claude Code docs
+- ✅ **Removed Error hook** from `.claude/settings.local.json` - replaced with Notification hook per official documentation
+
+#### Hook System Enhancements
+- ✅ **Added hook types documentation** - Explained command hooks vs. prompt hooks
+- ✅ **Added hook input/output specifications** - Documented stdin JSON format and exit codes
+- ✅ **Added security warnings** - Per official Claude Code guidelines about arbitrary command execution
+- ✅ **Enhanced troubleshooting guidance** - Based on official configuration system
+
+#### Documentation Improvements
+- 📖 Rewrote "Configuration Nightmare" section with accurate information
+- 📖 Added references to official Claude Code documentation
+- 📖 Clarified most reliable hooks (Notification) vs. intermittent hooks (tool-related)
+- 📖 Improved security best practices section
+- 📖 Added note about legacy configuration locations from earlier Claude Code versions
+
+**Impact**: These corrections ensure ClaudeBell users have accurate information about Claude Code's configuration system and hook events, preventing confusion and misconfiguration.
 
 ### Added
 - Comprehensive CHANGELOG.md to track project evolution
+- Links to official Claude Code documentation (Hooks Guide, Hooks Reference, Settings Documentation)
 
 ## [Recent] - 2025-01
 
