@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -euo pipefail
+
 echo ""
 echo "==============================================="
 echo "      ClaudeBell Installer for Unix/Linux     "
@@ -21,11 +23,19 @@ echo ""
 
 # Test sound playback
 echo "Testing sound playback..."
-"$CLAUDE_BELL_DIR/scripts/play-sound.sh" default
-echo ""
+if "$CLAUDE_BELL_DIR/scripts/play-sound.sh" default; then
+    echo ""
+else
+    echo ""
+    echo "[ERROR] Sound playback test failed. Please check your audio setup and try again."
+    echo "Installation aborted."
+    exit 1
+fi
 
 # Detect shell and update appropriate config file
 SHELL_CONFIG=""
+ZSH_VERSION="${ZSH_VERSION:-}"
+BASH_VERSION="${BASH_VERSION:-}"
 if [ -n "$ZSH_VERSION" ]; then
     SHELL_CONFIG="$HOME/.zshrc"
 elif [ -n "$BASH_VERSION" ]; then
@@ -63,6 +73,7 @@ echo ""
 
 # Check for audio playback tools
 echo "Checking audio playback tools..."
+OSTYPE="${OSTYPE:-}"
 if [[ "$OSTYPE" == "darwin"* ]]; then
     if command -v afplay &> /dev/null; then
         echo "[OK] afplay is available (macOS)"
@@ -87,7 +98,7 @@ echo ""
 # Instructions for Claude Code configuration
 cat << EOF
 ===============================================
-      Next Steps - Configure Claude Code      
+      Next Steps - Configure Claude Code
 ===============================================
 
 1. Run: claude config edit
@@ -127,3 +138,5 @@ cat << EOF
 ===============================================
 
 EOF
+
+echo "[INFO] ClaudeBell installation finished successfully."
