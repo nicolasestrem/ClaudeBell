@@ -32,3 +32,4 @@ desktop.ini
 .env
 config/local-settings.json
 nul
+/.continue

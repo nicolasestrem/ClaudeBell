@@ -22,7 +22,6 @@ powershell -Command "Start-Sleep -Seconds 1"
 powershell -c "[System.Media.SystemSounds]::Asterisk.Play()"
 powershell -Command "Start-Sleep -Seconds 1"
 powershell -c "[System.Media.SystemSounds]::Hand.Play()"
-echo.
 
 REM Check if Claude settings directory exists
 set "CLAUDE_SETTINGS_DIR=%USERPROFILE%\.claude"
@@ -31,7 +30,7 @@ if not exist "%CLAUDE_SETTINGS_DIR%" (
     mkdir "%CLAUDE_SETTINGS_DIR%"
 )
 
-REM Check for existing configurations and warn user
+REM Configuration Conflict Check
 echo.
 echo ===============================================
 echo        Configuration Conflict Check        
@@ -39,13 +38,11 @@ echo ===============================================
 echo.
 set "CONFIG_CONFLICTS=0"
 
-REM Check main global config
 if exist "%USERPROFILE%\.claude\settings.json" (
     echo [WARNING] Found existing config: %USERPROFILE%\.claude\settings.json
     set /a CONFIG_CONFLICTS+=1
 )
 
-REM Check other potential config locations
 if exist "%USERPROFILE%\.claude\settings.local.json" (
     echo [WARNING] Found existing config: %USERPROFILE%\.claude\settings.local.json
     set /a CONFIG_CONFLICTS+=1
@@ -63,33 +60,35 @@ if exist "config\claude-settings.json" (
 
 if %CONFIG_CONFLICTS% GTR 0 (
     echo.
-    echo [CRITICAL] Found %CONFIG_CONFLICTS% existing configuration file(s)!
+    echo [CRITICAL] Found %CONFIG_CONFLICTS% existing configuration file(s)! 
     echo.
-    echo Multiple config files can cause hook conflicts and excessive notifications.
-    echo This installer will create: %SETTINGS_FILE%
-    echo Note: Some Claude apps still read from %APPDATA%\Claude. Keep both locations tidy if you use them.
+    echo Multiple configs can cause conflicts. 
+    echo This installer will create: %USERPROFILE%\.claude\settings.json
+    echo Note: Some apps still read from %APPDATA%\Claude. Keep both tidy.
     echo.
     echo RECOMMENDATION: Clean up conflicting configs after installation.
-    echo See CLAUDE.md for the full troubleshooting guide.
+    echo See CLAUDE.md for troubleshooting.
     echo.
     pause
     echo.
 )
 
-REM Create the working settings.json configuration
+REM Create the settings.json configuration
 set "SETTINGS_FILE=%CLAUDE_SETTINGS_DIR%\settings.json"
-echo Creating minimal Claude Code hooks configuration...
 
-echo { > "%SETTINGS_FILE%"
-echo   "hooks": { >> "%SETTINGS_FILE%"
-echo     "Notification": [{ >> "%SETTINGS_FILE%"
-echo       "hooks": [{ >> "%SETTINGS_FILE%"
-echo         "type": "command", >> "%SETTINGS_FILE%"
-echo         "command": "powershell.exe -c \"[System.Media.SystemSounds]::Exclamation.Play()\"" >> "%SETTINGS_FILE%"
-echo       }] >> "%SETTINGS_FILE%"
-echo     }] >> "%SETTINGS_FILE%"
-echo   } >> "%SETTINGS_FILE%"
-echo } >> "%SETTINGS_FILE%"
+echo Creating minimal Claude Code hooks configuration...
+(
+    echo { 
+    echo   "hooks": {
+    echo     "Notification": [{
+    echo       "hooks": [{
+    echo         "type": "command",
+    echo         "command": "powershell.exe -c \"[System.Media.SystemSounds]::Exclamation.Play()\""
+    echo       }]
+    echo     }]
+    echo   }
+    echo }
+) > "%SETTINGS_FILE%"
 
 if exist "%SETTINGS_FILE%" (
     echo [OK] Claude Code hooks configured successfully
@@ -98,8 +97,8 @@ if exist "%SETTINGS_FILE%" (
     echo [ERROR] Failed to create configuration file
     goto :manual_config
 )
-echo.
 
+echo.
 echo ===============================================
 echo        Installation Complete!
 echo ===============================================
@@ -120,12 +119,12 @@ echo ===============================================
 echo.
 echo If you experience excessive notifications:
 echo 1. Check %USERPROFILE%\.claude\settings.json (main global config)
-echo 2. Remove hooks from other config files 
+echo 2. Remove hooks from other config files
 echo 3. See CLAUDE.md troubleshooting section
 echo.
 echo Configuration priority (highest to lowest):
 echo 1. %USERPROFILE%\.claude\settings.json
-echo 2. %USERPROFILE%\.claude\settings.local.json  
+echo 2. %USERPROFILE%\.claude\settings.local.json
 echo 3. %APPDATA%\Claude\settings.json (legacy desktop config)
 echo 4. %APPDATA%\Claude\claude-settings.json
 echo 5. Project-specific configs
@@ -135,7 +134,9 @@ echo Keep both directories in sync if you rely on each environment.
 echo.
 echo Restart Claude Code to activate the hooks.
 echo.
-goto :end
+
+:end
+goto :eof
 
 :manual_config
 echo.
@@ -158,6 +159,6 @@ echo     }]
 echo   }
 echo }
 echo.
-
-:end
 pause
+goto :eof
+
