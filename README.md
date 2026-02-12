@@ -294,12 +294,15 @@ ClaudeBell includes a comprehensive test suite to verify installation and functi
 
 **Windows:**
 - `test-installation.bat` - Verifies all scripts are present and hook configuration is correct
+- `test-install-bat-integrity.bat` - Validates install.bat file integrity (detects corruption)
 - `test-sound.ps1` - Tests PowerShell system sound playback
 - `validate-hooks.ps1` - Validates Claude Code hook configuration syntax
+- `validate-install-bat.ps1` - PowerShell script to validate install.bat integrity
 - `test-permission.bat` - Tests permission prompt detection
 
 **Unix/Mac:**
 - `test_install_script.sh` - Verifies install.sh path expansion and configuration
+- `validate-install-bat.sh` - Shell script to validate install.bat integrity (cross-platform)
 - `scripts/play-sound.sh --test` - Tests sound player functionality
 
 ### Running Tests
@@ -308,11 +311,18 @@ ClaudeBell includes a comprehensive test suite to verify installation and functi
 # Windows - Full installation test
 test-installation.bat
 
+# Windows - Validate install.bat integrity
+test-install-bat-integrity.bat
+powershell -File validate-install-bat.ps1
+
 # Windows - Sound playback test
 powershell -File test-sound.ps1
 
 # Unix/Mac - Installation verification
 ./test_install_script.sh
+
+# Unix/Mac - Validate install.bat integrity
+./validate-install-bat.sh
 
 # Manual sound test (all platforms)
 # Windows
@@ -357,6 +367,35 @@ python scripts/play-sound.py alert
 - **Most reliable**: `Notification` hook for permission prompts
 - **Less reliable**: Tool-related hooks (PreToolUse, PostToolUse) depend on internal state
 - **Solution**: Restart Claude Code, ensure clean config, use absolute paths
+
+### Install.bat File Corruption?
+
+If you suspect `install.bat` is corrupted or contains invalid content:
+
+1. **Run validation scripts:**
+   ```bash
+   # Windows
+   test-install-bat-integrity.bat
+   # or
+   powershell -File validate-install-bat.ps1
+   
+   # Unix/Mac/Linux
+   ./validate-install-bat.sh
+   ```
+
+2. **What the validation checks:**
+   - File exists and is accessible
+   - Contains proper batch commands (@echo off, setlocal, etc.)
+   - No process list output or corruption patterns
+   - Reasonable file size (100-200 lines)
+   - Proper batch file structure
+
+3. **If validation fails:**
+   - Re-download install.bat from the repository
+   - Check git commit hash matches expected version
+   - See [VALIDATION_REPORT.md](VALIDATION_REPORT.md) for detailed investigation
+
+The validation scripts will output detailed results showing exactly what checks passed or failed.
 
 ## 📝 Available Hook Events
 
