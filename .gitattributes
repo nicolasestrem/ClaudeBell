@@ -1,0 +1,19 @@
+# Git attributes for ClaudeBell repository
+# Ensures consistent line endings across platforms
+
+# Windows batch files must have CRLF line endings
+*.bat text eol=crlf
+
+# PowerShell scripts should have CRLF line endings
+*.ps1 text eol=crlf
+
+# Shell scripts should have LF line endings
+*.sh text eol=lf
+
+# Text files with LF line endings
+*.md text eol=lf
+*.txt text eol=lf
+*.json text eol=lf
+
+# Ensure WAV files are treated as binary
+*.wav binary
